@@ -6,6 +6,8 @@ LINUX_DIR=$(RESOURCES_DIR)/linux-x86-64
 LINUX_SHARED_LIB=$(LINUX_DIR)/libenry.so
 DARWIN_DIR=$(RESOURCES_DIR)/darwin
 DARWIN_SHARED_LIB=$(DARWIN_DIR)/libenry.dylib
+WINDOWS_DIR=$(RESOURCES_DIR)/windows-x86-64
+WINDOWS_SHARED_LIB=$(RESOURCES_DIR)/enry.dll
 STATIC_LIB=$(RESOURCES_DIR)/libenry.a
 HEADER_FILE=libenry.h
 NATIVE_LIB=./shared/enry.go
@@ -47,6 +49,8 @@ linux-shared: $(LINUX_SHARED_LIB)
 
 darwin-shared: $(DARWIN_SHARED_LIB)
 
+windows-shared: $(WINDOWS_SHARED_LIB)
+
 $(DARWIN_SHARED_LIB):
 	mkdir -p $(DARWIN_DIR) && \
 	CC="o64-clang" CXX="o64-clang++" CGO_ENABLED=1 GOOS=darwin go build -buildmode=c-shared -o $(DARWIN_SHARED_LIB) $(NATIVE_LIB) && \
@@ -57,6 +61,10 @@ $(LINUX_SHARED_LIB):
 	CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -buildmode=c-shared -o $(LINUX_SHARED_LIB) $(NATIVE_LIB) && \
 	mv $(LINUX_DIR)/$(HEADER_FILE) $(RESOURCES_DIR)/$(HEADER_FILE)
 
+$(WINDOWS_SHARED_LIB):
+	mkdir -p $(WINDOWS_DIR) && \
+	CGO_ENABLED=1 GOOS=windows GOARCH=amd64 go build -buildmode=c-shared -o $(WINDOWS_SHARED_LIB) $(NATIVE_LIB) && \
+	mv $(WINDOWS_DIR)/$(HEADER_FILE) $(RESOURCES_DIR)/$(HEADER_FILE)
 
 static: $(STATIC_LIB)
 
